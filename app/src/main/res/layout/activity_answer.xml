@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    android:orientation="vertical"
+    tools:context=".Activity.AnswerActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/list_view_user">
+            </ListView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/timerText"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="5dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="500dp"
+                    android:layout_height="150sp"
+                    android:orientation="horizontal"
+                    android:id="@+id/recycler_randomed_card">
+                </android.support.v7.widget.RecyclerView>
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/reset_button"
+                    android:text="reset"/>
+
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:id="@+id/go_button"
+                android:text="reset"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textSize="20sp"
+                    android:text="+"
+                    android:textAlignment="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="20dp"
+                    android:paddingTop="20dp"
+                    android:id="@+id/operator1"/>
+                <TextView
+                    android:textSize="20sp"
+                    android:text="-"
+                    android:textAlignment="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="20dp"
+                    android:paddingTop="20dp"
+                    android:id="@+id/operator2"/>
+
+                <TextView
+                    android:textSize="20sp"
+                    android:text="*"
+                    android:paddingTop="20dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="20dp"
+                    android:textAlignment="center"
+                    android:id="@+id/operator3"/>
+
+                <TextView
+                    android:textSize="20sp"
+                    android:paddingTop="20dp"
+                    android:text="/"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="20dp"
+                    android:textAlignment="center"
+                    android:id="@+id/operator4"/>
+
+                <TextView
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    android:id="@+id/hasilResult"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
