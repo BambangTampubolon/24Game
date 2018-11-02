@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.beng.newandroidproject.Adapter.CardAdapter;
 import com.example.beng.newandroidproject.Entity.Card;
@@ -51,12 +52,6 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
     public void setTimerCount(int timerCount) {
         this.timerCount = timerCount;
     }
-
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +111,8 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
                 e.printStackTrace();
             }
         final Intent intentToDialogResult = new Intent(this, DialogResult.class);
+        final Intent intentToDialogFinish = new Intent(this, DialogFinish.class);
+        final Toast toast = Toast.makeText(this, "No one answer", Toast.LENGTH_SHORT);
 
         final CountDownTimer countDownTimer = new CountDownTimer(timerCount*1000, 1000) {
             @Override
@@ -125,9 +122,16 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
 
             @Override
             public void onFinish() {
-                intentToAnswer.putExtra("listCardRandomed", (Serializable) listRecyclerCard);
-                intentToAnswer.putExtra("userList", (Serializable) getAllAnsweringUser());
-                startActivity(intentToAnswer);
+                if(isAnyoneAnswer()){
+                    intentToAnswer.putExtra("listCardRandomed", (Serializable) listRecyclerCard);
+                    intentToAnswer.putExtra("userList", (Serializable) getAllAnsweringUser());
+                    intentToAnswer.putExtra("count_down_timer", timerCount);
+                    startActivity(intentToAnswer);
+                }else {
+                    toast.show();
+                    clearCardRandomed();
+                }
+
             }
         };
 
@@ -135,7 +139,8 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
             @Override
             public void onClick(View view) {
                 if(initialDeckCard.size() == 0){
-                    startActivity(intentToDialogResult);
+                    intentToDialogFinish.putExtra("list_user", (Serializable) userGet);
+                    startActivity(intentToDialogFinish);
                     countDownTimer.cancel();
                 }else {
                     getNumberToCalculate();
@@ -210,6 +215,29 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
             }
         });
     }
+
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        Log.i("checkmasukdimodemana", "onRestore: ");
+//        idsUser = savedInstanceState.getLongArray("idsUser");
+//        timerCount = savedInstanceState.getInt("timer_Count");
+//        initialDeckCard = (List<Card>) savedInstanceState.getSerializable("cardList");
+//        try {
+//            userGet = new getAllSavedAsyncTasl(userDao, idsUser).execute().get();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//        Log.i("checkmasukdimodemana", "onSaveInstanceState: " + "sampesini");
+//        super.onSaveInstanceState(outState, outPersistentState);
+//        outState.putLongArray("idsUser", idsUser);
+//        outState.putSerializable("cardList", (Serializable) initialDeckCard);
+//        outState.putInt("timer_Count", this.timerCount);
+//    }
 
     @Override
     public void cardSelected(int position) {
@@ -315,14 +343,18 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
     }
 
     private void setVisibleLayoutUser(List<User> userList){
+        Log.i("checkuserrule", "setVisibleLayoutUser: " + userList.size());
         for(int i = 0; i < userList.size(); i++){
-            Log.i("checkuserrule", "setVisibleLayoutUser: " + userList.get(i).toString());
+            Log.i("checkuserrules", "looping: " + i);
             usersFrameLayout.get(i).setVisibility(View.VISIBLE);
             usersNameText.get(i).setText(userList.get(i).getNama());
             usersScoreText.get(i).setText(userList.get(i).getTotalCorrect().toString());
         }
     }
 
+    private void setBackgroundClicked(int i){
+        usersFrameLayout.get(i).setBackground(getDrawable(R.drawable.border));
+    }
 
     private static class getAllSavedAsyncTasl extends AsyncTask<Void, Void, List<User>>{
         private UserDao userDao;
@@ -344,20 +376,17 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        Log.i("checkmasukdimodemana", "onSaveInstanceState: " + "sampesini");
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putLongArray("idsUser", idsUser);
-        outState.putSerializable("cardList", (Serializable) initialDeckCard);
-        outState.putInt("timer_Count", this.timerCount);
+    public void clearCardRandomed(){
+        listRecyclerCard.clear();
+        cardAdapter.notifyDataSetChanged();
     }
-
 
     private void changeStatusAnswerUser(int index){
         if(userGet.get(index).isAnswering()){
+            usersFrameLayout.get(index).setBackground(null);
             userGet.get(index).setAnswering(false);
         }else {
+            usersFrameLayout.get(index).setBackground(getDrawable(R.drawable.border));
             userGet.get(index).setAnswering(true);
         }
 
@@ -373,17 +402,10 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
         return answeringUser;
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Log.i("checkmasukdimodemana", "onRestore: ");
-        idsUser = savedInstanceState.getLongArray("idsUser");
-        timerCount = savedInstanceState.getInt("timer_Count");
-        initialDeckCard = (List<Card>) savedInstanceState.getSerializable("cardList");
-        try {
-            userGet = new getAllSavedAsyncTasl(userDao, idsUser).execute().get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private boolean isAnyoneAnswer(){
+        List<User> answerUser = getAllAnsweringUser();
+        return answerUser.size() != 0;
     }
+
+
 }

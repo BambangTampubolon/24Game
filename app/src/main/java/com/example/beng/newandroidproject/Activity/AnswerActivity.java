@@ -2,6 +2,7 @@ package com.example.beng.newandroidproject.Activity;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,6 +51,16 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
     private ListView listViewUser;
     private List<User> userList;
     private UserAdapter listUserAdapter;
+    private static int timerCountdown;
+    private TextView counterText;
+
+    public static int getTimerCountdown() {
+        return timerCountdown;
+    }
+
+    public static void setTimerCountdown(int timerCountdown) {
+        AnswerActivity.timerCountdown = timerCountdown;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +74,13 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         resetButton = findViewById(R.id.reset_button);
         goButton = findViewById(R.id.go_button);
         listViewUser = findViewById(R.id.list_view_user);
+        counterText = findViewById(R.id.timer_count);
+
         Intent intentFromInGame = getIntent();
         cardList = (List<Card>) intentFromInGame.getSerializableExtra("listCardRandomed");
         answeringUser = (User) intentFromInGame.getSerializableExtra("userAnswer");
         userList = (List<User>) intentFromInGame.getSerializableExtra("userList");
+        setTimerCountdown(intentFromInGame.getIntExtra("count_down_timer", 0));
         listUserAdapter = new UserAdapter(userList, this);
         listViewUser.setAdapter(listUserAdapter);
         cardSelected = new ArrayList<>();
@@ -83,6 +97,7 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
             @Override
             public void onClick(View view) {
                 indexOperator = setOperator(1);
+                changeBackgroundonOperator(1, isSelectedOperator);
                 checkCardSelected();
             }
         });
@@ -91,6 +106,7 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
             @Override
             public void onClick(View view) {
                 indexOperator = setOperator(2);
+                changeBackgroundonOperator(2, isSelectedOperator);
                 checkCardSelected();
             }
         });
@@ -99,6 +115,7 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
             @Override
             public void onClick(View view) {
                 indexOperator = setOperator(3);
+                changeBackgroundonOperator(3, isSelectedOperator);
                 checkCardSelected();
             }
         });
@@ -107,6 +124,7 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
             @Override
             public void onClick(View view) {
                 indexOperator = setOperator(4);
+                changeBackgroundonOperator(4, isSelectedOperator);
                 checkCardSelected();
             }
         });
@@ -132,12 +150,23 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
                 finishedAnswer();
             }
         });
+
+        CountDownTimer countDownTimer = new CountDownTimer(timerCountdown*1000, 1000) {
+            @Override
+            public void onTick(long l) {
+                counterText.setText(String.valueOf(l));
+            }
+
+            @Override
+            public void onFinish() {
+                finishedAnswer();
+            }
+        };
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
     }
 
     private void setCardSelected(int position){
@@ -210,6 +239,8 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         isSelectedCard2 = false;
         isSelectedOperator = false;
         cardAdapter.notifyDataSetChanged();
+        clearBackgroundonOperator();
+        clearAllBackgroundCard();
     }
 
     private int setOperator(int indexOperator){
@@ -223,6 +254,49 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
             }else{
                 return indexOperator;
             }
+        }
+    }
+
+    private void clearBackgroundonOperator(){
+        operatorPlus.setBackground(null);
+        operatorMinus.setBackground(null);
+        operatorTimes.setBackground(null);
+        operatorDivide.setBackground(null);
+    }
+
+    private void changeBackgroundonOperator(int indexOperator, boolean isSelectedOperator){
+        clearBackgroundonOperator();
+        switch (indexOperator){
+            case 1:
+                if(isSelectedOperator){
+                    operatorPlus.setBackground(getDrawable(R.drawable.border));
+                }else {
+                    operatorPlus.setBackground(null);
+                }
+                break;
+            case 2:
+                if(isSelectedOperator){
+                    operatorMinus.setBackground(getDrawable(R.drawable.border));
+                }else {
+                    operatorMinus.setBackground(null);
+                }
+                break;
+            case 3:
+                if(isSelectedOperator){
+                    operatorTimes.setBackground(getDrawable(R.drawable.border));
+                }else {
+                    operatorTimes.setBackground(null);
+                }
+                break;
+            case 4:
+                if(isSelectedOperator){
+                    operatorTimes.setBackground(getDrawable(R.drawable.border));
+                }else {
+                    operatorTimes.setBackground(null);
+                }
+                break;
+                default:
+                    break;
         }
     }
 
@@ -245,6 +319,7 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
     public void cardSelected(int position) {
         setCardSelected(position);
         checkCardSelected();
+        setBackgroundCardClicked();
     }
 
     private static class addCountUser extends AsyncTask<Void, Void, Void> {
@@ -264,5 +339,22 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
             userDao.addCorrectCount(userId, totalCount);
             return null;
         }
+    }
+
+    private void clearAllBackgroundCard(){
+        for(Card a: cardList){
+            a.setClicked(false);
+        }
+    }
+
+    private void setBackgroundCardClicked(){
+        clearAllBackgroundCard();
+        if(isSelectedCard1){
+            cardList.get(indexCard1).setClicked(true);
+        }
+        if(isSelectedCard2){
+            cardList.get(indexCard2).setClicked(true);
+        }
+        cardAdapter.notifyDataSetChanged();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.beng.newandroidproject.Adapter;
 
 import android.content.Context;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +59,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
             }
         });
         holder.textCard.setText(String.valueOf(cards.get(position).getValue()));
+        if(cards.get(position).isClicked()){
+            holder.linearLayout.setBackgroundResource(R.drawable.border);
+        }else {
+            holder.linearLayout.setBackground(null);
+        }
     }
 
     @Override

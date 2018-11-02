@@ -29,10 +29,12 @@
 
     <string name="text_select_player">Waktu ronde</string>
     <string name="text_answer_player">Waktu jawab</string>
-    
+
     <string name="title_activity_game_play">GamePlayActivity</string>
 
     <string name="title_activity_in_game">InGameActivity</string>
 
     <string name="title_activity_answer">AnswerActivity</string>
+
+    <string name="title_activity_dialog_finish">DialogFinish</string>
 </resources>

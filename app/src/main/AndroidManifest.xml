@@ -46,9 +46,12 @@
             android:label="@string/title_activity_answer"
             android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".Activity.DialogResult"
-            android:theme="@android:style/Theme.Dialog">
-        </activity>
+        <activity
+            android:name=".Activity.DialogResult"
+            android:theme="@android:style/Theme.Dialog"></activity>
+        <activity
+            android:name=".Activity.DialogFinish"
+            android:theme="@android:style/Theme.Dialog"></activity>
     </application>
 
 </manifest>
