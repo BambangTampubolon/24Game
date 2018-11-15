@@ -22,6 +22,9 @@ public interface UserDao {
     @Query("SELECT * FROM user_table")
     List<User> getAllUsers();
 
+    @Query("SELECT * FROM user_table ORDER BY total_correct DESC")
+    List<User> getAllUsersRanked();
+
     @Query("SELECT * FROM user_table where id IN (:userIds)")
     List<User> getUsersById(long[] userIds);
 

@@ -141,6 +141,12 @@
             android:id="@+id/timer_count"
             android:text="Start.."/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_rank"
+            android:text="RANK"/>
+
         <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

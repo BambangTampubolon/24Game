@@ -42,7 +42,7 @@ public class RankUserAdapter extends BaseAdapter {
         TextView userRank = view.findViewById(R.id.rank_user);
         TextView userName = view.findViewById(R.id.user_name_rank);
         TextView answerCount = view.findViewById(R.id.user_answer_count);
-        userRank.setText(String.valueOf(i));
+        userRank.setText(String.valueOf(i+1));
         userName.setText(userList.get(i).getNama());
         answerCount.setText(userList.get(i).getTotalCorrect().toString());
         return view;

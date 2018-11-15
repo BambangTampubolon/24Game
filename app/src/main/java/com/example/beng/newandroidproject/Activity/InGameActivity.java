@@ -1,5 +1,6 @@
 package com.example.beng.newandroidproject.Activity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
@@ -16,7 +17,9 @@ import android.widget.Toast;
 
 import com.example.beng.newandroidproject.Adapter.CardAdapter;
 import com.example.beng.newandroidproject.Entity.Card;
+import com.example.beng.newandroidproject.Fragment.RankPlayerFragment;
 import com.example.beng.newandroidproject.Interface.CardAdapterInterface;
+import com.example.beng.newandroidproject.Interface.FragmentCickListener;
 import com.example.beng.newandroidproject.R;
 import com.example.beng.newandroidproject.User;
 import com.example.beng.newandroidproject.UserDao;
@@ -27,12 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class InGameActivity extends AppCompatActivity implements CardAdapterInterface{
+public class InGameActivity extends AppCompatActivity implements CardAdapterInterface, FragmentCickListener{
     private List<Card> listRecyclerCard = new ArrayList<>();
     private List<Card> initialDeckCard;
     private RecyclerView recyclerCardRandomed;
     private CardAdapter cardAdapter;
-    private Button buttonStart, buttonAnswer;
+    private Button buttonStart, buttonAnswer, buttonRank;
     private LinearLayoutManager linearLayoutManager;
     private UserDao userDao;
     private List<User> userGet;
@@ -47,6 +50,8 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
     private List<TextView> usersScoreText = new ArrayList<>();
     private long[] idsUser;
     private static int timerCount;
+    private FragmentManager fragmentManager;
+    private RankPlayerFragment rankPlayerFragment;
 
     public void setTimerCount(int timerCount) {
         this.timerCount = timerCount;
@@ -82,6 +87,7 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
         userScore7 = findViewById(R.id.score_player7);
         userScore8 = findViewById(R.id.score_player8);
         timerText = findViewById(R.id.timer_count);
+        buttonRank = findViewById(R.id.button_rank);
         initializeListButtonUser();
 
         recyclerCardRandomed = findViewById(R.id.recycler_random_card);
@@ -109,7 +115,6 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        final Intent intentToDialogResult = new Intent(this, DialogResult.class);
         final Intent intentToDialogFinish = new Intent(this, DialogFinish.class);
         final Toast toast = Toast.makeText(this, "No one answer", Toast.LENGTH_SHORT);
 
@@ -213,15 +218,26 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
                 startActivity(intentToAnswer);
             }
         });
+
+        buttonRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showRankPlayer();
+            }
+        });
     }
 
+    public void showRankPlayer(){
+        fragmentManager = getFragmentManager();
+        rankPlayerFragment = new RankPlayerFragment();
+        rankPlayerFragment.show(fragmentManager, "tag");
+    }
 
 
     @Override
     public void cardSelected(int position) {
 
     }
-
 
     //getting randomed listcard to calculate
     private void getNumberToCalculate(){
@@ -332,6 +348,11 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
 
     private void setBackgroundClicked(int i){
         usersFrameLayout.get(i).setBackground(getDrawable(R.drawable.border));
+    }
+
+    @Override
+    public void closeDialogFragment() {
+        rankPlayerFragment.dismiss();
     }
 
     private static class getAllSavedAsyncTasl extends AsyncTask<Void, Void, List<User>>{
