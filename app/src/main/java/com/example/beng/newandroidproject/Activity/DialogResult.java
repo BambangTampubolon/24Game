@@ -17,7 +17,17 @@ public class DialogResult extends Activity {
     private Button okButton;
     private int answerResult;
     private CountDownTimer countDownTimer;
+    private String userName;
     private User userData;
+    boolean isLastUser;
+
+    public void setLastUser(boolean lastUser) {
+        isLastUser = lastUser;
+    }
+
+    public boolean isLastUser() {
+        return isLastUser;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +37,14 @@ public class DialogResult extends Activity {
         textResult = findViewById(R.id.resultText);
         okButton = findViewById(R.id.okButton);
         Intent intent = getIntent();
+        userName = intent.getStringExtra("user_name");
+        setLastUser(intent.getBooleanExtra("isLastPerson", false));
         final boolean isTrue = intent.getBooleanExtra("result", false);
         Log.i("cekbooleanistrue", "onCreate: " + isTrue);
         if(isTrue){
-            textResult.setText("Jawaban benar");
+            textResult.setText("Jawaban "  + userName +" benar");
         }else {
-            textResult.setText("Jawaban salah");
+            textResult.setText("Jawaban "  + userName +" salah");
         }
 
         countDownTimer = new CountDownTimer(2000,1000) {
@@ -43,22 +55,36 @@ public class DialogResult extends Activity {
 
             @Override
             public void onFinish() {
-                MoveToQuizActivity(null, isTrue);
+                if(isLastUser()){
+                    moveToQuizActivity(null, isTrue);
+                }else {
+                    moveToAnswerActivity();
+                }
             }
         };
-
+        Log.i("checkbollastuser", "onCreate: " + isLastUser());
         countDownTimer.start();
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MoveToQuizActivity(null, isTrue);
+                if(isLastUser()){
+                    moveToQuizActivity(null, isTrue);
+                }else {
+                    moveToAnswerActivity();
+                }
+
             }
         });
     }
 
-    public void MoveToQuizActivity(User player, boolean isTrue){
+    public void moveToAnswerActivity(){
+        Intent intent = new Intent(this, AnswerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+    }
+
+    public void moveToQuizActivity(User player, boolean isTrue){
         Intent intent = new Intent(this, InGameActivity.class);
-//        intent.putExtra("answeringUser", userData);
         intent.putExtra("result", isTrue);
         startActivity(intent);
     }

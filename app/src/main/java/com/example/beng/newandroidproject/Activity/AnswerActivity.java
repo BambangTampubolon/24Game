@@ -14,25 +14,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.beng.newandroidproject.Adapter.CardAdapter;
-import com.example.beng.newandroidproject.Adapter.ListUserAdapter;
 import com.example.beng.newandroidproject.Adapter.UserAdapter;
 import com.example.beng.newandroidproject.Entity.Card;
 import com.example.beng.newandroidproject.Interface.CardAdapterInterface;
 import com.example.beng.newandroidproject.R;
 import com.example.beng.newandroidproject.User;
 import com.example.beng.newandroidproject.UserDao;
-import com.example.beng.newandroidproject.UserListAdapter;
 import com.example.beng.newandroidproject.UserRoomDatabase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class AnswerActivity extends AppCompatActivity implements CardAdapterInterface{
-
+    private static List<User> listBackup;
     private List<Card> cardList;
     private List<Card> cardSelected;
     private User answeringUser;
@@ -53,6 +49,16 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
     private UserAdapter listUserAdapter;
     private static int timerCountdown;
     private TextView counterText;
+    private int counterPlayer;
+    private User[] userBackup;
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
 
     public static int getTimerCountdown() {
         return timerCountdown;
@@ -75,11 +81,17 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         goButton = findViewById(R.id.go_button);
         listViewUser = findViewById(R.id.list_view_user);
         counterText = findViewById(R.id.timer_count);
-
+        Log.i("checkmasuksinigakya", "onCreate: ");
         Intent intentFromInGame = getIntent();
-        cardList = (List<Card>) intentFromInGame.getSerializableExtra("listCardRandomed");
+        if(null != intentFromInGame.getSerializableExtra("listCardRandomed")){
+            Log.i("checkmasuksinigak", "onCreate: ");
+            cardList = (List<Card>) intentFromInGame.getSerializableExtra("listCardRandomed");
+            setUserList((List<User>) intentFromInGame.getSerializableExtra("userList"));
+            counterPlayer = 0;
+        }
+
         answeringUser = (User) intentFromInGame.getSerializableExtra("userAnswer");
-        userList = (List<User>) intentFromInGame.getSerializableExtra("userList");
+
         setTimerCountdown(intentFromInGame.getIntExtra("count_down_timer", 0));
         listUserAdapter = new UserAdapter(userList, this);
         listViewUser.setAdapter(listUserAdapter);
@@ -132,15 +144,7 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cardList.clear();
-                cardList.addAll(cardSelected);
-                cardAdapter.notifyDataSetChanged();
-                indexOperator = -1;
-                indexCard1 = -1;
-                indexCard2 = -1;
-                isSelectedOperator = false;
-                isSelectedCard1 = false;
-                isSelectedCard2 = false;
+                resetConditionCard();
             }
         });
 
@@ -162,11 +166,6 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
                 finishedAnswer();
             }
         };
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
     }
 
     private void setCardSelected(int position){
@@ -305,13 +304,23 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         if(cardList.size() == 1){
             if(cardList.get(0).getValue() == 24) {
                 intentToDialogResult.putExtra("result", true);
-                new addCountUser(userDao, userList.get(0).getId(), userList.get(0).getTotalCorrect() + 1 ).execute();
+                new addCountUser(userDao, userList.get(counterPlayer).getId(), userList.get(counterPlayer).getTotalCorrect() + 1 ).execute();
             }else{
                 intentToDialogResult.putExtra("result", false);
             }
         }else {
             intentToDialogResult.putExtra("result", false);
         }
+        intentToDialogResult.putExtra("user_name", userList.get(counterPlayer).getNama());
+        Log.i("checkuserlist", "finishedAnswer: " + userList.size() + counterPlayer);
+        if(counterPlayer == userList.size() -1){
+            Log.i("checkuserlist1", "finishedAnswer: " + userList.size() + counterPlayer);
+            intentToDialogResult.putExtra("isLastPerson", true);
+        }else {
+            intentToDialogResult.putExtra("isLastPerson", false);
+        }
+        counterPlayer += 1;
+        resetConditionCard();
         startActivity(intentToDialogResult);
     }
 
@@ -347,6 +356,13 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
     private void setBackgroundCardClicked(){
         clearAllBackgroundCard();
         if(isSelectedCard1){
@@ -356,5 +372,18 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
             cardList.get(indexCard2).setClicked(true);
         }
         cardAdapter.notifyDataSetChanged();
+    }
+
+
+    public void resetConditionCard(){
+        cardList.clear();
+        cardList.addAll(cardSelected);
+        cardAdapter.notifyDataSetChanged();
+        indexOperator = -1;
+        indexCard1 = -1;
+        indexCard2 = -1;
+        isSelectedOperator = false;
+        isSelectedCard1 = false;
+        isSelectedCard2 = false;
     }
 }

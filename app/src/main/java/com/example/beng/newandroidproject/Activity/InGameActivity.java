@@ -3,7 +3,6 @@ package com.example.beng.newandroidproject.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -98,8 +97,8 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
         final Intent intentToAnswer = new Intent(this, AnswerActivity.class);
         final Intent intent = getIntent();
         initialDeckCard = populateDeckCard();
-        if(null != intent.getStringExtra("count_down_timer")) {
-            setTimerCount(Integer.valueOf(intent.getStringExtra("count_down_timer")));
+        if(0 != intent.getIntExtra("count_down_timer", 0)) {
+            setTimerCount(intent.getIntExtra("count_down_timer", 0));
         }
         if(null == idsUser){
             idsUser = intent.getLongArrayExtra("idsSaved");
@@ -216,28 +215,7 @@ public class InGameActivity extends AppCompatActivity implements CardAdapterInte
         });
     }
 
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        Log.i("checkmasukdimodemana", "onRestore: ");
-//        idsUser = savedInstanceState.getLongArray("idsUser");
-//        timerCount = savedInstanceState.getInt("timer_Count");
-//        initialDeckCard = (List<Card>) savedInstanceState.getSerializable("cardList");
-//        try {
-//            userGet = new getAllSavedAsyncTasl(userDao, idsUser).execute().get();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    @Override
-//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-//        Log.i("checkmasukdimodemana", "onSaveInstanceState: " + "sampesini");
-//        super.onSaveInstanceState(outState, outPersistentState);
-//        outState.putLongArray("idsUser", idsUser);
-//        outState.putSerializable("cardList", (Serializable) initialDeckCard);
-//        outState.putInt("timer_Count", this.timerCount);
-//    }
+
 
     @Override
     public void cardSelected(int position) {

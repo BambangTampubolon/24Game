@@ -2,6 +2,8 @@ package com.example.beng.newandroidproject.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -21,8 +23,17 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.beng.newandroidproject.Adapter.ListUserAdapter;
+import com.example.beng.newandroidproject.Fragment.FragmentSettingAnswerTime;
+import com.example.beng.newandroidproject.Fragment.FragmentSettingPlayer;
+import com.example.beng.newandroidproject.Fragment.FragmentSettingRoundTime;
+import com.example.beng.newandroidproject.Fragment.StateSelectionFragment;
+import com.example.beng.newandroidproject.Interface.FragmentAnswerInterface;
+import com.example.beng.newandroidproject.Interface.FragmentPlayerInterface;
+import com.example.beng.newandroidproject.Interface.FragmentRoundInterface;
+import com.example.beng.newandroidproject.Interface.OnMenuClickListener;
 import com.example.beng.newandroidproject.Interface.SpinnerInterface;
 import com.example.beng.newandroidproject.R;
+import com.example.beng.newandroidproject.StaticVariable;
 import com.example.beng.newandroidproject.User;
 import com.example.beng.newandroidproject.UserDao;
 import com.example.beng.newandroidproject.UserRoomDatabase;
@@ -35,16 +46,19 @@ import java.util.concurrent.ExecutionException;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class SettingRuleActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SpinnerInterface{
-
-    private Spinner userSpinner;
+public class SettingRuleActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        SpinnerInterface, OnMenuClickListener, FragmentPlayerInterface, FragmentAnswerInterface, FragmentRoundInterface{
+    //    private Spinner userSpinner;
     private List<User> listUserSelected;
     private ListUserAdapter adapterListUser;
-    private ListView listViewUser;
+//    private ListView listViewUser;
     private Button dummyButton;
     private UserDao userDao;
     private LinearLayout linearLeft, linearRight;
-    private EditText roundTime;
+    private int timerRound;
+//    private EditText roundTime;
+
+    StateSelectionFragment stateSelectionFragment;
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -121,23 +135,28 @@ public class SettingRuleActivity extends AppCompatActivity implements AdapterVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_rule);
         dummyButton = findViewById(R.id.dummy_button);
-        listViewUser = findViewById(R.id.list_user_view);
-        userSpinner = findViewById(R.id.spinner_user_option);
-        linearLeft = findViewById(R.id.linear_setting_1);
-        linearRight = findViewById(R.id.linear_setting_2);
+//        listViewUser = findViewById(R.id.list_user_view);
+//        userSpinner = findViewById(R.id.spinner_user_option);
+//        linearLeft = findViewById(R.id.linear_setting_1);
+//        linearRight = findViewById(R.id.linear_setting_2);
         listUserSelected = new ArrayList<>();
-        roundTime = findViewById(R.id.round_time);
+//        roundTime = findViewById(R.id.round_time);
 
-        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this,
-                R.array.list_spinner, android.R.layout.simple_spinner_item);
-        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        userSpinner.setAdapter(adapterSpinner);
-        userSpinner.setOnItemSelectedListener(this);
+//        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this,
+//                R.array.list_spinner, android.R.layout.simple_spinner_item);
+//        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        userSpinner.setAdapter(adapterSpinner);
+//        userSpinner.setOnItemSelectedListener(this);
 
         adapterListUser = new ListUserAdapter(this, listUserSelected, this);
-        listViewUser.setAdapter(adapterListUser);
+//        listViewUser.setAdapter(adapterListUser);
         userDao = UserRoomDatabase.getDatabase(this).userDao();
 
+        stateSelectionFragment = (StateSelectionFragment) getFragmentManager().findFragmentByTag("headless");
+        if(null == stateSelectionFragment){
+            stateSelectionFragment = new StateSelectionFragment();
+            getFragmentManager().beginTransaction().add(stateSelectionFragment, "headless").commit();
+        }
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
@@ -160,9 +179,11 @@ public class SettingRuleActivity extends AppCompatActivity implements AdapterVie
             @Override
             public void onClick(View view) {
                 try {
+                    Log.i("checkusersave", "onClick: " + listUserSelected.size());
                     long[] idsSaved = new insertAllUserAsyncTask(userDao, listUserSelected, SettingRuleActivity.this).execute().get();
-                    Log.i("checktimercount", "onClick: " + Long.getLong(roundTime.getText().toString()));
-                    toMainActivityIntent.putExtra("count_down_timer", roundTime.getText().toString());
+//                    Log.i("checktimercount", "onClick: " + Long.getLong(roundTime.getText().toString()));
+                    Log.i("checkusersave", "onClick: " + timerRound);
+                    toMainActivityIntent.putExtra("count_down_timer", timerRound);
                     toMainActivityIntent.putExtra("idsSaved",idsSaved);
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
@@ -220,14 +241,6 @@ public class SettingRuleActivity extends AppCompatActivity implements AdapterVie
      * Schedules a call to hide() in delay milliseconds, canceling any
      * previously scheduled calls.
      */
-
-    public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
-
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
-    }
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
@@ -260,6 +273,65 @@ public class SettingRuleActivity extends AppCompatActivity implements AdapterVie
         listUserSelected.get(position).setNama(userName);
         listUserSelected.get(position).setLocked(!isLocked);
         adapterListUser.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onButtonMenuSelected(String value) {
+        stateSelectionFragment.lastSelection = value;
+        FragmentTransaction transaction;
+        if(value == "player"){
+            FragmentSettingPlayer fragmentPlayer = (FragmentSettingPlayer) getFragmentManager().findFragmentByTag(StaticVariable.PLAYER_FRAGMENT);
+            if(null == fragmentPlayer){
+                Bundle args = new Bundle();
+                args.putString(FragmentSettingPlayer.EXTRA_TEXT, value);
+                fragmentPlayer = new FragmentSettingPlayer();
+                fragmentPlayer.setArguments(args);
+            }
+            transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_menu_container, fragmentPlayer, StaticVariable.PLAYER_FRAGMENT);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else if (value == "roundtimer"){
+            FragmentSettingRoundTime fragmentRoundTime = (FragmentSettingRoundTime) getFragmentManager().findFragmentByTag(StaticVariable.ROUND_FRAGMENT);
+            if(null == fragmentRoundTime){
+                Bundle args = new Bundle();
+                args.putString(FragmentSettingRoundTime.EXTRA_TEXT, value);
+                fragmentRoundTime = new FragmentSettingRoundTime();
+                fragmentRoundTime.setArguments(args);
+            }
+            transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_menu_container, fragmentRoundTime, StaticVariable.ROUND_FRAGMENT);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else if (value == "answertimer"){
+            FragmentSettingAnswerTime fragmentAnswerTime = (FragmentSettingAnswerTime) getFragmentManager().findFragmentByTag(StaticVariable.ANSWER_FRAGMENT);
+            if(null == fragmentAnswerTime){
+                Bundle args = new Bundle();
+                args.putString(FragmentSettingAnswerTime.EXTRA_TEXT, value);
+                fragmentAnswerTime = new FragmentSettingAnswerTime();
+                fragmentAnswerTime.setArguments(args);
+            }
+            transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_menu_container, fragmentAnswerTime, StaticVariable.ANSWER_FRAGMENT);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
+
+    @Override
+    public void sentDataToActivity(int time) {
+
+    }
+
+    @Override
+    public void sentDataToActivity(List<User> userList) {
+        Log.i("checkusersave", "sentDataToActivity: " + userList.size());
+        this.listUserSelected = userList;
+    }
+
+    @Override
+    public void sentRoundDataToActivity(int time) {
+        timerRound = time;
     }
 
     private static class insertAllUserAsyncTask extends AsyncTask<Void,Void, long[]>{

@@ -73,6 +73,7 @@ public class User implements Serializable{
                 "nama='" + nama + '\'' +
                 ", isLocked=" + isLocked +
                 ", id=" + id +
+                ", isAnswering=" + isAnswering +
                 ", totalCorrect=" + totalCorrect +
                 '}';
     }
