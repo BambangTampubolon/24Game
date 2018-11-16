@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.DialogResult">
+    tools:context=".activity.DialogResult">
 
         <TextView
             android:layout_width="200sp"

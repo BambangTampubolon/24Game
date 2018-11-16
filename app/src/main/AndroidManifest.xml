@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NewUserActivity" />
         <activity
-            android:name=".Activity.SettingRuleActivity"
+            android:name=".activity.SettingRuleActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_setting_rule"
             android:screenOrientation="landscape"
@@ -27,31 +27,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.GamePlayActivity"
+            android:name=".activity.GamePlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_play"
             android:theme="@style/FullscreenTheme" />
         <activity
-            android:name=".Activity.DialogActivity"
+            android:name=".activity.DialogActivity"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name=".Activity.InGameActivity"
+            android:name=".activity.InGameActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_in_game"
             android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme" />
         <activity
-            android:name=".Activity.AnswerActivity"
+            android:name=".activity.AnswerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_answer"
             android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme" />
         <activity
-            android:name=".Activity.DialogResult"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:name=".activity.DialogResult"
+            android:theme="@android:style/Theme.Dialog"/>
         <activity
-            android:name=".Activity.DialogFinish"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:name=".activity.DialogFinish"
+            android:theme="@android:style/Theme.Dialog"/>
     </application>
 
 </manifest>

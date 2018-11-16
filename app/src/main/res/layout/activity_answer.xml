@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#0099cc"
     android:orientation="vertical"
-    tools:context=".Activity.AnswerActivity">
+    tools:context=".activity.AnswerActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
