@@ -47,11 +47,6 @@ public abstract class UserRoomDatabase extends RoomDatabase{
 
         @Override
         protected Void doInBackground(Void... voids) {
-//            userDao.deleteAll();
-//            User user = new User("haha");
-//            userDao.insert(user);
-//            User myUser = new User("hoho");
-//            userDao.insert(myUser);
             return null;
         }
     }

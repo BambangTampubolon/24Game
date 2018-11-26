@@ -2,13 +2,13 @@ package com.example.beng.newandroidproject.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,7 +40,7 @@ import java.util.concurrent.ExecutionException;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class SettingRuleActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+public class SettingRuleActivity extends Activity implements AdapterView.OnItemSelectedListener,
         SpinnerInterface, OnMenuClickListener, FragmentPlayerInterface, FragmentAnswerInterface, FragmentRoundInterface{
     //    private Spinner userSpinner;
     private List<User> listUserSelected;
@@ -249,7 +249,7 @@ public class SettingRuleActivity extends AppCompatActivity implements AdapterVie
     public void onButtonMenuSelected(String value) {
         stateSelectionFragment.lastSelection = value;
         FragmentTransaction transaction;
-        if(value == "player"){
+        if(value.equalsIgnoreCase("player")){
             FragmentSettingPlayer fragmentPlayer = (FragmentSettingPlayer) getFragmentManager().findFragmentByTag(StaticVariable.PLAYER_FRAGMENT);
             if(null == fragmentPlayer){
                 Bundle args = new Bundle();
@@ -261,7 +261,7 @@ public class SettingRuleActivity extends AppCompatActivity implements AdapterVie
             transaction.replace(R.id.fragment_menu_container, fragmentPlayer, StaticVariable.PLAYER_FRAGMENT);
             transaction.addToBackStack(null);
             transaction.commit();
-        }else if (value == "roundtimer"){
+        }else if (value.equalsIgnoreCase("roundtimer")){
             FragmentSettingRoundTime fragmentRoundTime = (FragmentSettingRoundTime) getFragmentManager().findFragmentByTag(StaticVariable.ROUND_FRAGMENT);
             if(null == fragmentRoundTime){
                 Bundle args = new Bundle();
@@ -273,7 +273,7 @@ public class SettingRuleActivity extends AppCompatActivity implements AdapterVie
             transaction.replace(R.id.fragment_menu_container, fragmentRoundTime, StaticVariable.ROUND_FRAGMENT);
             transaction.addToBackStack(null);
             transaction.commit();
-        }else if (value == "answertimer"){
+        }else if (value.equalsIgnoreCase("answertimer")){
             FragmentSettingAnswerTime fragmentAnswerTime = (FragmentSettingAnswerTime) getFragmentManager().findFragmentByTag(StaticVariable.ANSWER_FRAGMENT);
             if(null == fragmentAnswerTime){
                 Bundle args = new Bundle();

@@ -1,9 +1,9 @@
 package com.example.beng.newandroidproject.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +25,7 @@ import com.example.beng.newandroidproject.UserRoomDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnswerActivity extends AppCompatActivity implements CardAdapterInterface{
+public class AnswerActivity extends Activity implements CardAdapterInterface{
     private static List<User> listBackup;
     private List<Card> cardList;
     private List<Card> cardSelected;
@@ -50,16 +50,8 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
     private int counterPlayer;
     private User[] userBackup;
 
-    public List<User> getUserList() {
-        return userList;
-    }
-
     public void setUserList(List<User> userList) {
         this.userList = userList;
-    }
-
-    public static int getTimerCountdown() {
-        return timerCountdown;
     }
 
     public static void setTimerCountdown(int timerCountdown) {
@@ -79,7 +71,6 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         goButton = findViewById(R.id.go_button);
         listViewUser = findViewById(R.id.list_view_user);
         counterText = findViewById(R.id.timer_count);
-        Log.i("checkmasuksinigakya", "onCreate: ");
         Intent intentFromInGame = getIntent();
         if(null != intentFromInGame.getSerializableExtra("listCardRandomed")){
             Log.i("checkmasuksinigak", "onCreate: ");
@@ -287,9 +278,9 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
                 break;
             case 4:
                 if(isSelectedOperator){
-                    operatorTimes.setBackground(getDrawable(R.drawable.border));
+                    operatorDivide.setBackground(getDrawable(R.drawable.border));
                 }else {
-                    operatorTimes.setBackground(null);
+                    operatorDivide.setBackground(null);
                 }
                 break;
                 default:
@@ -312,7 +303,6 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
         intentToDialogResult.putExtra("user_name", userList.get(counterPlayer).getNama());
         Log.i("checkuserlist", "finishedAnswer: " + userList.size() + counterPlayer);
         if(counterPlayer == userList.size() -1){
-            Log.i("checkuserlist1", "finishedAnswer: " + userList.size() + counterPlayer);
             intentToDialogResult.putExtra("isLastPerson", true);
         }else {
             intentToDialogResult.putExtra("isLastPerson", false);
@@ -376,12 +366,12 @@ public class AnswerActivity extends AppCompatActivity implements CardAdapterInte
     public void resetConditionCard(){
         cardList.clear();
         cardList.addAll(cardSelected);
-        cardAdapter.notifyDataSetChanged();
         indexOperator = -1;
         indexCard1 = -1;
         indexCard2 = -1;
         isSelectedOperator = false;
         isSelectedCard1 = false;
         isSelectedCard2 = false;
+        cardAdapter.notifyDataSetChanged();
     }
 }

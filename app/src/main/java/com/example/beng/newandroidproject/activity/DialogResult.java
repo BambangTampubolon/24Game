@@ -15,10 +15,8 @@ import com.example.beng.newandroidproject.User;
 public class DialogResult extends Activity {
     private TextView textResult;
     private Button okButton;
-    private int answerResult;
     private CountDownTimer countDownTimer;
     private String userName;
-    private User userData;
     boolean isLastUser;
 
     public void setLastUser(boolean lastUser) {
@@ -40,7 +38,6 @@ public class DialogResult extends Activity {
         userName = intent.getStringExtra("user_name");
         setLastUser(intent.getBooleanExtra("isLastPerson", false));
         final boolean isTrue = intent.getBooleanExtra("result", false);
-        Log.i("cekbooleanistrue", "onCreate: " + isTrue);
         if(isTrue){
             textResult.setText("Jawaban "  + userName +" benar");
         }else {
@@ -62,7 +59,6 @@ public class DialogResult extends Activity {
                 }
             }
         };
-        Log.i("checkbollastuser", "onCreate: " + isLastUser());
         countDownTimer.start();
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +81,7 @@ public class DialogResult extends Activity {
 
     public void moveToQuizActivity(User player, boolean isTrue){
         Intent intent = new Intent(this, InGameActivity.class);
-        intent.putExtra("result", isTrue);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
     }
 }
