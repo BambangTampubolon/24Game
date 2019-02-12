@@ -5,22 +5,29 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:id="@+id/done_button"
-        android:layout_gravity="top|start"/>
-
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner_user_option">
     </Spinner>
 
-    <ListView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/list_user_view">
-    </ListView>
+        android:orientation="vertical">
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:id="@+id/list_user_view">
+        </ListView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/done_button"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
 
 </LinearLayout>

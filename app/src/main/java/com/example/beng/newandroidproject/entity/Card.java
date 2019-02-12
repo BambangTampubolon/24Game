@@ -9,6 +9,7 @@ public class Card implements Serializable{
     private int id;
     private boolean isClicked;
     private boolean isDiscarded;
+    private int indexClick;
 
     public int getValue() {
         return value;
@@ -58,4 +59,11 @@ public class Card implements Serializable{
         isDiscarded = discarded;
     }
 
+    public int getIndexClick() {
+        return indexClick;
+    }
+
+    public void setIndexClick(int indexClick) {
+        this.indexClick = indexClick;
+    }
 }

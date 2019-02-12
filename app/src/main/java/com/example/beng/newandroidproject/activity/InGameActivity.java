@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.example.beng.newandroidproject.adapter.CardAdapter;
 import com.example.beng.newandroidproject.entity.Card;
 import com.example.beng.newandroidproject.fragment.FragmentFinishGame;
 import com.example.beng.newandroidproject.fragment.FragmentInGameStart;
+import com.example.beng.newandroidproject.fragment.FragmentPause;
 import com.example.beng.newandroidproject.fragment.RankPlayerFragment;
 import com.example.beng.newandroidproject.interfaces.CardAdapterInterface;
 import com.example.beng.newandroidproject.interfaces.DialogOptionInterface;
@@ -28,6 +30,7 @@ import com.example.beng.newandroidproject.R;
 import com.example.beng.newandroidproject.User;
 import com.example.beng.newandroidproject.UserDao;
 import com.example.beng.newandroidproject.UserRoomDatabase;
+import com.example.beng.newandroidproject.interfaces.FragmentPauseInterface;
 import com.example.beng.newandroidproject.interfaces.InGameStartInterface;
 
 import java.io.Serializable;
@@ -35,13 +38,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class InGameActivity extends Activity implements CardAdapterInterface, FragmentCickListener, DialogOptionInterface, InGameStartInterface{
+public class InGameActivity extends Activity implements CardAdapterInterface, FragmentCickListener, DialogOptionInterface, InGameStartInterface,
+        FragmentPauseInterface{
     private List<Card> listRecyclerCard = new ArrayList<>();
     private List<Card> initialDeckCard;
     private CardAdapter cardAdapter;
     private List<User> userGet;
     private FrameLayout frameLayout1, frameLayout2, frameLayout3, frameLayout4,
             frameLayout5, frameLayout6, frameLayout7, frameLayout8;
+    private Button button1, button2, button3, button4,
+            button5, button6, button7, button8;
     private TextView userName1, userName2, userName3, userName4, userName5,
             userName6, userName7, userName8, timerText;
     private TextView userScore1, userScore2, userScore3, userScore4, userScore5,
@@ -50,18 +56,24 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
     private List<TextView> usersNameText = new ArrayList<>();
     private List<TextView> usersScoreText = new ArrayList<>();
     private long[] idsUser;
-    private int timerCount;
+    private int timerCount, timeRemaining;
     private FragmentManager fragmentManager;
     private RankPlayerFragment rankPlayerFragment;
     private FragmentFinishGame fragmentFinishGame;
     private FragmentInGameStart fragmentInGameStart;
+    private FragmentPause fragmentPause;
     private Intent intentToDialogFinish;
+    private Intent intentToAnswer;
     private Toast toast;
     private CountDownTimer countDownTimer;
     private Animation animation;
 
     public void setTimerCount(int timerCount) {
         this.timerCount = timerCount;
+    }
+
+    public void setTimeRemaining(int timeRemaining) {
+        this.timeRemaining = timeRemaining;
     }
 
     @Override
@@ -76,6 +88,14 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
         frameLayout6 = findViewById(R.id.frame_player6);
         frameLayout7 = findViewById(R.id.frame_player7);
         frameLayout8 = findViewById(R.id.frame_player8);
+        button1 = findViewById(R.id.player1);
+        button2 = findViewById(R.id.player2);
+        button3 = findViewById(R.id.player3);
+        button4 = findViewById(R.id.player4);
+        button5 = findViewById(R.id.player5);
+        button6 = findViewById(R.id.player6);
+        button7 = findViewById(R.id.player7);
+        button8 = findViewById(R.id.player8);
         userName1 = findViewById(R.id.username_player1);
         userName2 = findViewById(R.id.username_player2);
         userName3 = findViewById(R.id.username_player3);
@@ -93,6 +113,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
         userScore7 = findViewById(R.id.score_player7);
         userScore8 = findViewById(R.id.score_player8);
         timerText = findViewById(R.id.timer_count);
+        Button pauseButton = findViewById(R.id.pause_button);
         animation = AnimationUtils.loadAnimation(this, R.anim.blink_animation);
         initializeListButtonUser();
 
@@ -104,7 +125,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
         recyclerCardRandomed.setLayoutManager(linearLayoutManager);
         recyclerCardRandomed.setAdapter(cardAdapter);
 
-        final Intent intentToAnswer = new Intent(this, AnswerActivity.class);
+        intentToAnswer = new Intent(this, AnswerActivity.class);
         final Intent intent = getIntent();
         initialDeckCard = populateDeckCard();
         if(0 != intent.getIntExtra("count_down_timer", 0)) {
@@ -113,94 +134,89 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
         if(null == idsUser){
             idsUser = intent.getLongArrayExtra("idsSaved");
         }
-            try {
-                userGet = new getAllSavedAsyncTasl(userDao).execute().get();
-                setVisibleLayoutUser(userGet);
+        setCountDownTimer(timerCount);
+        try {
+            userGet = new getAllSavedAsyncTasl(userDao).execute().get();
+            setVisibleLayoutUser(userGet);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         intentToDialogFinish = new Intent(this, DialogFinish.class);
         toast = Toast.makeText(this, "No one answer", Toast.LENGTH_SHORT);
 
-        countDownTimer = new CountDownTimer(timerCount*1000, 1000) {
-            @Override
-            public void onTick(long l) {
-                timerText.setText(String.valueOf(l/1000));
-                timerText.startAnimation(animation);
-            }
-
-            @Override
-            public void onFinish() {
-                if(isAnyoneAnswer()){
-                    intentToAnswer.putExtra("listCardRandomed", (Serializable) listRecyclerCard);
-                    intentToAnswer.putExtra("userList", (Serializable) getAllAnsweringUser());
-                    intentToAnswer.putExtra("count_down_timer", timerCount);
-                    startActivity(intentToAnswer);
-                }else {
-                    toast.show();
-                    clearCardRandomed();
-                    showStartFragment();
-                }
-
-            }
-        };
-
-        frameLayout1.setOnClickListener(new View.OnClickListener() {
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(0);
             }
         });
 
-        frameLayout2.setOnClickListener(new View.OnClickListener() {
+        button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(1);
             }
         });
 
-        frameLayout3.setOnClickListener(new View.OnClickListener() {
+        button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(2);
             }
         });
 
-        frameLayout4.setOnClickListener(new View.OnClickListener() {
+        button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(3);
             }
         });
 
-        frameLayout5.setOnClickListener(new View.OnClickListener() {
+        button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(4);
             }
         });
 
-        frameLayout6.setOnClickListener(new View.OnClickListener() {
+        button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(5);
             }
         });
 
-        frameLayout7.setOnClickListener(new View.OnClickListener() {
+        button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(6);
             }
         });
 
-        frameLayout8.setOnClickListener(new View.OnClickListener() {
+        button8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeStatusAnswerUser(7);
             }
         });
 
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                countDownTimer.cancel();
+                setTimerCount(timeRemaining);
+                showPauseFragment();
+            }
+        });
+    }
+
+    public void showPauseFragment(){
+        fragmentManager = getFragmentManager();
+        fragmentPause = new FragmentPause();
+        Bundle bundle = new Bundle();
+        bundle.putString("title_fragment", "GAME PAUSED \\n RESUME");
+        fragmentPause.setArguments(bundle);
+        fragmentPause.show(fragmentManager, "tag");
     }
 
     public void showRankPlayer(){
@@ -211,8 +227,41 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
 
     public void showStartFragment(){
         fragmentManager = getFragmentManager();
-        fragmentInGameStart = new FragmentInGameStart();
-        fragmentInGameStart.show(fragmentManager, "OPENING");
+        if(null == fragmentInGameStart){
+            fragmentInGameStart = new FragmentInGameStart();
+
+        }
+        if(!fragmentInGameStart.isVisible()){
+            fragmentInGameStart.show(fragmentManager, "OPENING");
+        }
+    }
+
+    private void setCountDownTimer(long time){
+        countDownTimer = new CountDownTimer(timerCount*1000, 1000) {
+            @Override
+            public void onTick(long l) {
+                timerText.setText(String.valueOf(l/1000));
+                setTimeRemaining((int) l);
+                timerText.startAnimation(animation);
+            }
+
+            @Override
+            public void onFinish() {
+                timerText.setText(String.valueOf(0));
+                if(isAnyoneAnswer()){
+                    intentToAnswer.putExtra("listCardRandomed", (Serializable) listRecyclerCard);
+                    intentToAnswer.putExtra("userList", (Serializable) getAllAnsweringUser());
+                    intentToAnswer.putExtra("count_down_timer", timerCount);
+                    refreshStatusAnswer();
+                    startActivity(intentToAnswer);
+                }else {
+                    toast.show();
+                    clearCardRandomed();
+                    showStartFragment();
+                }
+
+            }
+        };
     }
 
 
@@ -232,7 +281,6 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
         Random random = new Random();
         listRecyclerCard.clear();
         int selected;
-        Log.i("ceksebelum", "getNumberToCalculate: " + initialDeckCard.size());
         for(int i=0; i<4; i++){
             if(initialDeckCard.size() == 1){
                 selected = 0;
@@ -258,6 +306,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
                 newCard.setValue(j);
                 newCard.setSymbol(String.valueOf(j));
                 newCard.setClicked(false);
+                newCard.setIndexClick(0);
                 myCard.add(newCard);
             }
         }
@@ -267,6 +316,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
             newCard.setValue(1);
             newCard.setSymbol("A");
             newCard.setClicked(false);
+            newCard.setIndexClick(0);
             myCard.add(newCard);
         }
         for(int y=1; y<=4;y++){
@@ -275,6 +325,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
             newCard.setValue(10);
             newCard.setSymbol("J");
             newCard.setClicked(false);
+            newCard.setIndexClick(0);
             myCard.add(newCard);
         }
         for(int y=1; y<=4;y++){
@@ -283,6 +334,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
             newCard.setValue(10);
             newCard.setSymbol("Q");
             newCard.setClicked(false);
+            newCard.setIndexClick(0);
             myCard.add(newCard);
         }
         for(int y=1; y<=4;y++){
@@ -291,6 +343,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
             newCard.setValue(10);
             newCard.setSymbol("K");
             newCard.setClicked(false);
+            newCard.setIndexClick(0);
             myCard.add(newCard);
         }
         return myCard;
@@ -369,6 +422,12 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
         showRankPlayer();
     }
 
+    @Override
+    public void ResumeGame() {
+        this.fragmentPause.dismiss();
+        countDownTimer.start();
+    }
+
     private static class getAllSavedAsyncTasl extends AsyncTask<Void, Void, List<User>>{
         private UserDao userDao;
 
@@ -393,6 +452,7 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
     }
 
     private void changeStatusAnswerUser(int index){
+        Log.i("checkindex", "changeStatusAnswerUser: " + index);
         if(userGet.get(index).isAnswering()){
             usersFrameLayout.get(index).setBackground(null);
             userGet.get(index).setAnswering(false);
@@ -402,6 +462,12 @@ public class InGameActivity extends Activity implements CardAdapterInterface, Fr
         }
     }
 
+    private void refreshStatusAnswer(){
+        for(int index = 0; index < userGet.size(); index++){
+            usersFrameLayout.get(index).setBackground(null);
+            userGet.get(index).setAnswering(false);
+        }
+    }
     private List<User> getAllAnsweringUser(){
         List<User> answeringUser = new ArrayList<>();
         for(User user : userGet){

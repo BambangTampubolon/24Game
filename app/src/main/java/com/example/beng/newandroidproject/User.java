@@ -16,7 +16,7 @@ public class User implements Serializable{
     @ColumnInfo(name = "is_locked")
     private boolean isLocked;
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
     private Integer id;

@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/card_frame_linear">
-    
+
+    <TextView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:textSize="13sp"
+        android:textAlignment="center"
+        android:id="@+id/index_card"
+        android:layout_gravity="top|start"
+        android:background="@drawable/border_white"/>
+
     <TextView
         android:layout_width="@dimen/card_width"
         android:layout_height="@dimen/card_height"
         android:id="@+id/card_text_view"
         android:layout_marginEnd="@dimen/card_margin_end"
         android:textAlignment="center"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:elevation="16dp"
+        android:layout_gravity="center_horizontal|center_vertical"/>
 
-</LinearLayout>
+</FrameLayout>

@@ -11,4 +11,9 @@
 
     <dimen name="button_setting_width">100dp</dimen>
     <dimen name="button_setting_height">50dp</dimen>
+
+    <dimen name="fab_size">70dp</dimen>
+    <dimen name="margin_fab">20dp</dimen>
+
+    <dimen name="timer_size">50dp</dimen>
 </resources>

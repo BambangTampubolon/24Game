@@ -1,6 +1,7 @@
 package com.example.beng.newandroidproject.activity;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
@@ -16,16 +17,18 @@ import android.widget.TextView;
 import com.example.beng.newandroidproject.adapter.CardAdapter;
 import com.example.beng.newandroidproject.adapter.UserAdapter;
 import com.example.beng.newandroidproject.entity.Card;
+import com.example.beng.newandroidproject.fragment.FragmentPause;
 import com.example.beng.newandroidproject.interfaces.CardAdapterInterface;
 import com.example.beng.newandroidproject.R;
 import com.example.beng.newandroidproject.User;
 import com.example.beng.newandroidproject.UserDao;
 import com.example.beng.newandroidproject.UserRoomDatabase;
+import com.example.beng.newandroidproject.interfaces.FragmentPauseInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnswerActivity extends Activity implements CardAdapterInterface{
+public class AnswerActivity extends Activity implements CardAdapterInterface, FragmentPauseInterface {
     private static List<User> listBackup;
     private List<Card> cardList;
     private List<Card> cardSelected;
@@ -49,6 +52,8 @@ public class AnswerActivity extends Activity implements CardAdapterInterface{
     private TextView counterText;
     private int counterPlayer;
     private User[] userBackup;
+    private FragmentPause fragmentPause;
+    private FragmentManager fragmentManager;
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
@@ -157,6 +162,27 @@ public class AnswerActivity extends Activity implements CardAdapterInterface{
         };
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showIntialFragment();
+    }
+
+    private void showIntialFragment(){
+        fragmentManager = getFragmentManager();
+        fragmentPause = (FragmentPause) fragmentManager.findFragmentByTag("intial");
+        if(null == fragmentPause){
+            fragmentPause = new FragmentPause();
+            Bundle bundle = new Bundle();
+            bundle.putString("title_fragment", userList.get(counterPlayer).getNama());
+            fragmentPause.setArguments(bundle);
+        }
+        if(!fragmentPause.isVisible()){
+            fragmentPause.show(fragmentManager, "intial");
+        }
+    }
+
     private void setCardSelected(int position){
         if(position == indexCard1){
             if(!isSelectedCard2){
@@ -212,6 +238,7 @@ public class AnswerActivity extends Activity implements CardAdapterInterface{
             resultCard.setClicked(false);
             resultCard.setDiscarded(false);
             resultCard.setSymbol("H");
+            resultCard.setIndexClick(0);
             swapResultCard(resultCard);
         }
     }
@@ -301,7 +328,6 @@ public class AnswerActivity extends Activity implements CardAdapterInterface{
             intentToDialogResult.putExtra("result", false);
         }
         intentToDialogResult.putExtra("user_name", userList.get(counterPlayer).getNama());
-        Log.i("checkuserlist", "finishedAnswer: " + userList.size() + counterPlayer);
         if(counterPlayer == userList.size() -1){
             intentToDialogResult.putExtra("isLastPerson", true);
         }else {
@@ -317,6 +343,11 @@ public class AnswerActivity extends Activity implements CardAdapterInterface{
         setCardSelected(position);
         checkCardSelected();
         setBackgroundCardClicked();
+    }
+
+    @Override
+    public void ResumeGame() {
+        this.fragmentPause.dismiss();
     }
 
     private static class addCountUser extends AsyncTask<Void, Void, Void> {
@@ -341,6 +372,7 @@ public class AnswerActivity extends Activity implements CardAdapterInterface{
     private void clearAllBackgroundCard(){
         for(Card a: cardList){
             a.setClicked(false);
+            a.setIndexClick(0);
         }
     }
 
@@ -355,9 +387,11 @@ public class AnswerActivity extends Activity implements CardAdapterInterface{
         clearAllBackgroundCard();
         if(isSelectedCard1){
             cardList.get(indexCard1).setClicked(true);
+            cardList.get(indexCard1).setIndexClick(1);
         }
         if(isSelectedCard2){
             cardList.get(indexCard2).setClicked(true);
+            cardList.get(indexCard2).setIndexClick(2);
         }
         cardAdapter.notifyDataSetChanged();
     }

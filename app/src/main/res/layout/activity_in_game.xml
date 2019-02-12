@@ -7,30 +7,177 @@
     android:orientation="vertical"
     tools:context=".activity.InGameActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relative1">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/linear_timer"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="@dimen/timer_size"
+                android:layout_height="@dimen/timer_size"
+                android:textSize="30sp"
+                android:textAllCaps="true"
+                android:id="@+id/timer_count"
+                android:text="@string/text_start_timer"
+                android:layout_marginEnd="@dimen/margin_fab"
+                android:layout_marginStart="@dimen/margin_fab"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/frame_player1"
+            android:visibility="gone"
+            android:layout_toStartOf="@id/linear_timer">
+
+            <Button
+                android:layout_width="@dimen/fab_size"
+                android:layout_height="@dimen/fab_size"
+                android:id="@+id/player1"
+                android:text="  "
+                android:background="@drawable/player_round_button"
+                android:backgroundTint="@color/amber"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/username_player1"
+                android:elevation="16dp"
+                android:textColor="@android:color/white"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:id="@+id/score_player1"
+                android:elevation="16dp"
+                android:textColor="@android:color/white"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/frame_player5"
+            android:visibility="gone"
+            android:layout_toEndOf="@id/linear_timer">
+
+            <Button
+                android:layout_width="@dimen/fab_size"
+                android:layout_height="@dimen/fab_size"
+                android:id="@+id/player5"
+                android:text="  "
+                android:background="@drawable/player_round_button"
+                android:backgroundTint="@color/green"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/username_player5"
+                android:elevation="16dp"
+                android:textColor="@android:color/white"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:id="@+id/score_player5"
+                android:elevation="16dp"
+                android:textColor="@android:color/white"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        </FrameLayout>
+
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="X"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/pause_button"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/red"/>
+
+
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
-        <FrameLayout
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/frame_player1"
-                android:visibility="invisible">
+                android:id="@+id/frame_player2"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/margin_fab">
 
-                <android.support.design.widget.FloatingActionButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/player1"
-                    android:height="50dp"
-                    android:width="50dp"
-                    android:src="@android:color/transparent"/>
+                <Button
+                    android:layout_width="@dimen/fab_size"
+                    android:layout_height="@dimen/fab_size"
+                    android:id="@+id/player2"
+                    android:text="  "
+                    android:background="@drawable/player_round_button"
+                    android:backgroundTint="@color/red"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:id="@+id/username_player1"
+                    android:id="@+id/username_player2"
+                    android:elevation="40dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:id="@+id/score_player2"
+                    android:elevation="16dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/frame_player6"
+                android:visibility="gone"
+                android:layout_below="@id/frame_player2">
+
+                <Button
+                    android:layout_width="@dimen/fab_size"
+                    android:layout_height="@dimen/fab_size"
+                    android:id="@+id/player6"
+                    android:background="@drawable/player_round_button"
+                    android:backgroundTint="@color/deep_brown"
+                    android:text="  "/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/username_player6"
+                    android:layout_gravity="center"
                     android:elevation="16dp"
                     android:textColor="@android:color/white"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -39,132 +186,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:id="@+id/score_player1"
+                    android:id="@+id/score_player6"
                     android:elevation="16dp"
                     android:textColor="@android:color/white"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
             </FrameLayout>
-
-        <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/frame_player5"
-                android:visibility="invisible">
-
-
-                <android.support.design.widget.FloatingActionButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/player5"
-                    android:height="50dp"
-                    android:src="@android:color/transparent"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:id="@+id/username_player5"
-                    android:elevation="16dp"
-                    android:textColor="@android:color/white"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:id="@+id/score_player5"
-                    android:elevation="16dp"
-                    android:textColor="@android:color/white"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-            </FrameLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/frame_player2"
-                    android:visibility="invisible">
-
-                    <android.support.design.widget.FloatingActionButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/player2"
-                        android:width="50dp"
-                        android:height="50dp"
-                        android:src="@android:color/transparent"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:id="@+id/username_player2"
-                        android:elevation="40dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:id="@+id/score_player2"
-                        android:elevation="16dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                </FrameLayout>
-
-            <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/frame_player6"
-                    android:visibility="invisible">
-
-                    <android.support.design.widget.FloatingActionButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/player6"
-                        android:width="50dp"
-                        android:height="50dp"
-                        android:src="@android:color/transparent"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/username_player6"
-                        android:layout_gravity="center"
-                        android:elevation="16dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:id="@+id/score_player6"
-                        android:elevation="16dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="5">
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="350dp"
@@ -177,110 +211,107 @@
                 android:id="@+id/recycler_random_card">
             </android.support.v7.widget.RecyclerView>
 
-            <TextView
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/timer_count"
-                android:text="Start.."/>
+                android:id="@+id/frame_player3"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/margin_fab">
 
-        </LinearLayout>
+                <Button
+                    android:layout_width="@dimen/fab_size"
+                    android:layout_height="@dimen/fab_size"
+                    android:id="@+id/player3"
+                    android:background="@drawable/player_round_button"
+                    android:backgroundTint="@color/deep_orange"
+                    android:text="  "/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <FrameLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/frame_player3"
-                    android:visibility="invisible">
+                    android:layout_gravity="center"
+                    android:id="@+id/username_player3"
+                    android:elevation="16dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-
-                    <android.support.design.widget.FloatingActionButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/player3"
-                        android:width="80dp"
-                        android:height="80dp"
-                        android:src="@android:color/transparent"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:id="@+id/username_player3"
-                        android:elevation="16dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:id="@+id/score_player3"
-                        android:elevation="16dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                </FrameLayout>
-
-            <FrameLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/frame_player7"
-                    android:visibility="invisible">
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:id="@+id/score_player3"
+                    android:elevation="16dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-                    <android.support.design.widget.FloatingActionButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/player7"
-                        android:width="50dp"
-                        android:height="50dp"
-                        android:src="@android:color/transparent"/>
+            </FrameLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:id="@+id/username_player7"
-                        android:elevation="16dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/frame_player7"
+                android:visibility="gone"
+                android:layout_below="@id/frame_player3">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:id="@+id/score_player7"
-                        android:elevation="16dp"
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <Button
+                    android:layout_width="@dimen/fab_size"
+                    android:layout_height="@dimen/fab_size"
+                    android:id="@+id/player7"
+                    android:background="@drawable/player_round_button"
+                    android:backgroundTint="@color/blue"
+                    android:text="  "/>
 
-                </FrameLayout>
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/username_player7"
+                    android:elevation="16dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:id="@+id/score_player7"
+                    android:elevation="16dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </FrameLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:gravity="center_horizontal">
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/frame_player4"
             android:layout_gravity="center"
-            android:visibility="invisible">
+            android:visibility="gone"
+            android:layout_marginEnd="@dimen/margin_fab">
 
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Button
+                android:layout_width="@dimen/fab_size"
+                android:layout_height="@dimen/fab_size"
                 android:id="@+id/player4"
-                android:width="50dp"
-                android:height="50dp"
-                android:src="@android:color/transparent"/>
+                android:background="@drawable/player_round_button"
+                android:backgroundTint="@color/indigo"
+                android:text="  "/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -294,7 +325,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_gravity="bottom|center_horizontal"
                 android:id="@+id/score_player4"
                 android:elevation="16dp"
                 android:textColor="@android:color/white"
@@ -307,15 +338,16 @@
             android:layout_height="wrap_content"
             android:id="@+id/frame_player8"
             android:layout_gravity="center"
-            android:visibility="invisible">
+            android:visibility="gone"
+            android:layout_toEndOf="@id/frame_player4">
 
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Button
+                android:layout_width="@dimen/fab_size"
+                android:layout_height="@dimen/fab_size"
                 android:id="@+id/player8"
-                android:width="50dp"
-                android:height="50dp"
-                android:src="@android:color/transparent"/>
+                android:background="@drawable/player_round_button"
+                android:backgroundTint="@color/deep_purple"
+                android:text="  "/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -329,13 +361,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_gravity="bottom|center_horizontal"
                 android:id="@+id/score_player8"
                 android:elevation="16dp"
                 android:textColor="@android:color/white"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         </FrameLayout>
+    </RelativeLayout>
 
-    </LinearLayout>
+
 </LinearLayout>

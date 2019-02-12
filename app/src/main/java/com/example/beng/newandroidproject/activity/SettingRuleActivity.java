@@ -42,15 +42,12 @@ import java.util.concurrent.ExecutionException;
  */
 public class SettingRuleActivity extends Activity implements AdapterView.OnItemSelectedListener,
         SpinnerInterface, OnMenuClickListener, FragmentPlayerInterface, FragmentAnswerInterface, FragmentRoundInterface{
-    //    private Spinner userSpinner;
     private List<User> listUserSelected;
     private ListUserAdapter adapterListUser;
-//    private ListView listViewUser;
     private Button dummyButton;
     private UserDao userDao;
     private LinearLayout linearLeft, linearRight;
     private int timerRound;
-//    private EditText roundTime;
 
     StateSelectionFragment stateSelectionFragment;
 
@@ -155,9 +152,7 @@ public class SettingRuleActivity extends Activity implements AdapterView.OnItemS
             @Override
             public void onClick(View view) {
                 try {
-                    Log.i("checkusersave", "onClick: " + listUserSelected.size());
                     long[] idsSaved = new insertAllUserAsyncTask(userDao, listUserSelected, SettingRuleActivity.this).execute().get();
-                    Log.i("checkusersave", "onClick: " + timerRound);
                     toMainActivityIntent.putExtra("count_down_timer", timerRound);
                     toMainActivityIntent.putExtra("idsSaved",idsSaved);
                 } catch (InterruptedException | ExecutionException e) {

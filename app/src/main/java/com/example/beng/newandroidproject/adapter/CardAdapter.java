@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -63,6 +64,19 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         }else {
             holder.linearLayout.setBackground(null);
         }
+        switch (cards.get(position).getIndexClick()){
+            case 1:
+                holder.textIndex.setVisibility(View.VISIBLE);
+                holder.textIndex.setText(String.valueOf(1));
+                break;
+            case 2:
+                holder.textIndex.setVisibility(View.VISIBLE);
+                holder.textIndex.setText(String.valueOf(2));
+                break;
+                default:
+                    holder.textIndex.setVisibility(View.GONE);
+                    break;
+        }
     }
 
     @Override
@@ -71,11 +85,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     }
 
     public class CardViewHolder extends RecyclerView.ViewHolder{
-        private TextView textCard;
-        private LinearLayout linearLayout;
+        private TextView textCard, textIndex;
+        private FrameLayout linearLayout;
 
         public CardViewHolder(View view){
             super(view);
+            textIndex = view.findViewById(R.id.index_card);
             textCard = view.findViewById(R.id.card_text_view);
             linearLayout = view.findViewById(R.id.card_frame_linear);
         }
